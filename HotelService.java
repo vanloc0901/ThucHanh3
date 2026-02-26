@@ -5,7 +5,7 @@
 package thuchanh1;
 import java.util.*;
 import java.io.File;
-
+// loc test
 public class HotelService {
 
     private static Map<String, String> otpStore = new HashMap<>();
