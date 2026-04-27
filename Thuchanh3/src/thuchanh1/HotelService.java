@@ -134,32 +134,52 @@ public class HotelService {
     // =====================================================
     // Feedback
     // ======================
-    public static boolean sendFeedback(int bookingId, int value) {
-        if (bookingId <= 0) return false;
-        if (value != 0 && value != 1) return false;
+     public static boolean sendFeedback(int bookingId, int value) {
+        // Mã đặt phòng phải lớn hơn 0
+        if (bookingId <= 0) {
+            return false;
+        }
+
+        // Feedback chỉ nhận 0 hoặc 1
+        // 0: không hài lòng
+        // 1: hài lòng
+        if (value != 0 && value != 1) {
+            return false;
+        }
+
+        // Lưu feedback theo bookingId
         feedbackStore.put(bookingId, value);
         return true;
     }
 
-    // ======================
-    // View History
-    // ======================
     public static List<String> viewHistory(int userId, int page) {
+        // userId và page phải lớn hơn 0
         if (userId <= 0 || page <= 0) {
             return Collections.emptyList();
         }
-        return Arrays.asList("Booking A", "Booking B");
+
+        // Dữ liệu demo lịch sử đặt phòng
+        return Arrays.asList(
+                "Booking A - Phòng Deluxe - 2 đêm",
+                "Booking B - Phòng Standard - 1 đêm"
+        );
     }
 
-    // ======================
-    // Upload Pricing Config
-    // ======================
     public static boolean uploadPricingConfig(String fileName, int newVersion, int currentVersion) {
-        if (fileName == null || !fileName.endsWith(".json")) return false;
+        // Tên file không được null
+        if (fileName == null) {
+            return false;
+        }
+
+        // File phải có định dạng .json
+        if (!fileName.toLowerCase().endsWith(".json")) {
+            return false;
+        }
+
+        // Phiên bản mới phải lớn hơn phiên bản hiện tại
         return newVersion > currentVersion;
     }
 
-    // Demo
     public static void main(String[] args) {
         register("0123456789");
         login("0123456789", otpStore.get("0123456789"));
