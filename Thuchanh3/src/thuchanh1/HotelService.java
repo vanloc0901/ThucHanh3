@@ -16,17 +16,29 @@ public class HotelService {
     // Registration
     // ======================
     public static boolean register(String phone) {
+        // Kiểm tra số điện thoại không được null
+        // Số điện thoại phải bắt đầu bằng 0 và có đúng 10 chữ số
         if (phone == null || !phone.matches("^0\\d{9}$")) {
             return false;
         }
+
+        // Nếu số điện thoại hợp lệ thì gửi OTP
         sendOtp(phone);
         return true;
     }
 
     private static void sendOtp(String phone) {
+        // Tạo mã OTP ngẫu nhiên gồm 6 chữ số
         String otp = String.valueOf(new Random().nextInt(900000) + 100000);
+
+        // Lưu OTP theo số điện thoại
         otpStore.put(phone, otp);
-        otpExpireTime.put(phone, System.currentTimeMillis() + 2 * 60 * 1000); // 2 minutes
+
+        // OTP hết hạn sau 2 phút
+        otpExpireTime.put(phone, System.currentTimeMillis() + 2 * 60 * 1000);
+
+        // In OTP ra màn hình để demo
+        System.out.println("OTP của " + phone + " là: " + otp);
     }
 
     // ======================
