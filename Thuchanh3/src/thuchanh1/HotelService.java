@@ -33,23 +33,51 @@ public class HotelService {
     // Login
     // ======================
     public static boolean login(String phone, String otp) {
-        if (phone == null || otp == null) return false;
+        if (phone == null || otp == null) 
+        { 
+            return false;
+        }
 
-        String storedOtp = otpStore.get(phone);
-        Long expireTime = otpExpireTime.get(phone);
+        if (storedOtp == null || expireTime == null || System.currentTimeMillis() > expireTime) {
+            // Tối ưu cấu trúc dữ liệu: Nếu OTP đã hết hạn, dọn dẹp (remove) khỏi Map 
+            // để tránh rò rỉ bộ nhớ (Memory Leak) khi vận hành lâu dài.
+            if (expireTime != null && System.currentTimeMillis() > expireTime) {
+                otpStore.remove(phone);
+                otpExpireTime.remove(phone);
+            }
+            return false;
+        }
 
-        if (storedOtp == null || expireTime == null) return false;
-        if (System.currentTimeMillis() > expireTime) return false;
+        // 2. Xác thực OTP
+        boolean isSuccess = storedOtp.equals(otp);
 
-        return storedOtp.equals(otp);
+        // 3. Tối ưu bảo mật (Rất Quan Trọng): 
+        // Sau khi đăng nhập thành công, PHẢI xóa OTP ngay lập tức.
+        // Tránh tình trạng kẻ gian lấy được mã và tái sử dụng (Replay Attack) trong vòng 2 phút.
+        if (isSuccess) {
+            otpStore.remove(phone);
+            otpExpireTime.remove(phone);
+        }
+
+        return isSuccess;
     }
 
     // ======================
     // Edit Profile
     // ======================
-    public static boolean updateProfile(String name, String location) {
-        if (name == null || name.trim().isEmpty()) return false;
-        if (location == null || location.trim().isEmpty()) return false;
+ public static boolean updateProfile(String name, String location) {
+        // Tối ưu logic: Gom điều kiện cho gọn gàng.
+        if (name == null || name.trim().isEmpty()) {
+            return false;
+        }
+        
+        if (location == null || location.trim().isEmpty()) {
+            return false;
+        }
+
+        // Tối ưu mở rộng: Trong thực tế, bạn nên giới hạn thêm độ dài của chuỗi
+        // Ví dụ: if (name.length() > 50) return false;
+        
         return true;
     }
 
