@@ -53,30 +53,45 @@ public class HotelService {
         return true;
     }
 
-    // ======================
-    // Upload ID Image
-    // ======================
-    public static boolean uploadImage(File file) {
-        if (file == null) return false;
+// =====================================================
 
-        String fileName = file.getName().toLowerCase();
-        if (!(fileName.endsWith(".jpg") || fileName.endsWith(".png") || fileName.endsWith(".heic"))) {
+    public static boolean uploadImage(File file) {
+        // File không được null
+        if (file == null) {
             return false;
         }
 
-        long sizeInMb = file.length() / 1024 / 1024;
-        return sizeInMb <= 10;
+        // Lấy tên file và chuyển về chữ thường
+        String fileName = file.getName().toLowerCase();
+
+        // Chỉ cho phép file jpg, png, heic
+        if (!(fileName.endsWith(".jpg")
+                || fileName.endsWith(".png")
+                || fileName.endsWith(".heic"))) {
+            return false;
+        }
+
+        // Dung lượng file không quá 10MB
+        return file.length() <= 10 * 1024 * 1024;
     }
 
-    // ======================
-    // Submit Special Requests
-    // ======================
     public static boolean submitRequests(List<Integer> serviceIds) {
-        if (serviceIds == null || serviceIds.isEmpty()) return false;
+        // Danh sách dịch vụ không được null hoặc rỗng
+        if (serviceIds == null || serviceIds.isEmpty()) {
+            return false;
+        }
+
+        // Kiểm tra từng mã dịch vụ phải lớn hơn 0
+        for (Integer id : serviceIds) {
+            if (id == null || id <= 0) {
+                return false;
+            }
+        }
+
         return true;
     }
 
-    // ======================
+    // =====================================================
     // Feedback
     // ======================
     public static boolean sendFeedback(int bookingId, int value) {
